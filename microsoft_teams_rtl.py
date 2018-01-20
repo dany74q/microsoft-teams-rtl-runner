@@ -1,14 +1,12 @@
+import os
 import time
 import json
 import logging
-import os
+import requests
 import platform
 import subprocess
 from argparse import ArgumentParser
-
-import requests
-
-from websocket import create_connection, WebSocketTimeoutException
+from websocket import create_connection
 
 
 class TeamsRTLRunnerBase(object):
