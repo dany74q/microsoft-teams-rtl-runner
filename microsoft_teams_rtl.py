@@ -90,7 +90,7 @@ class TeamsRTLRunnerBase(object):
                 ws = self.window_to_socket.get(uid, None)
                 if not ws:
                     websocket_url = active_window.get('webSocketDebuggerUrl', 'ws://localhost:31339/devtools/page/{}'.format(uid))
-                    self.window_to_socket[uid] = ws = create_connection(websocket_url, timeout=5)
+                    self.window_to_socket[uid] = ws = create_connection(websocket_url, timeout=30)
                 payload = self.get_eval_expression("document.querySelectorAll('.ts-edit-box .cke_editable').length")
                 ws.send(json.dumps(payload))
                 window_found = json.loads(ws.recv())['result']['result']['value'] > 0
@@ -138,6 +138,12 @@ class TeamsRTLRunnerBase(object):
         self.spawn_new_instance(path)
         self.inject_script(self.script_to_inject)
         logging.info('Done ! (Contact dashemes for suggestions / problems)')
+        logging.info('Keep window open to ensure persistency (Just in case)')
+        while True:
+            self.inject_script(self.script_to_inject)
+            # Inject every 2 minutes
+            time.sleep(60 * 2)
+
 
 
 class WindowsTeamsRTLRunner(TeamsRTLRunnerBase):
