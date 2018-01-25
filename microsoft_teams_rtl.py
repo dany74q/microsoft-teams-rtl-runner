@@ -89,7 +89,7 @@ class TeamsRTLRunnerBase(object):
                 uid = active_window['id']
                 ws = self.window_to_socket.get(uid, None)
                 if not ws:
-                    websocket_url = active_window.get('webSocketDebuggerUrl', 'ws://localhost:31339/devtools/page/{}'.format(uid))
+                    websocket_url = active_window.get('webSocketDebuggerUrl', 'ws://localhost:{}/devtools/page/{}'.format(self.port, uid))
                     self.window_to_socket[uid] = ws = create_connection(websocket_url, timeout=30)
                 payload = self.get_eval_expression("document.querySelectorAll('.ts-edit-box .cke_editable').length")
                 ws.send(json.dumps(payload))
@@ -183,7 +183,7 @@ if '__main__' == __name__:
     logging.basicConfig(level=logging.INFO)
     
     parser = ArgumentParser()
-    parser.add_argument('-p', '--port', default=31339,
+    parser.add_argument('-p', '--port', default=19990,
                         help='Choose an open port (Used for electron debugging)')
     parser.add_argument('-s', '--script', default=os.path.join(
         os.path.dirname(__file__), 'rtl.js'), help='Path of a script to inject')
