@@ -1,3 +1,5 @@
+# coding=utf-8
+
 import os
 import time
 import json
@@ -85,7 +87,7 @@ class TeamsRTLRunnerBase(object):
 
 
             for active_window in active_windows:
-                title = active_window['title']
+                title = active_window['title'] = try_encode_utf_8(active_window['title'])
                 uid = active_window['id']
                 ws = self.window_to_socket.get(uid, None)
                 if not ws:
@@ -177,6 +179,12 @@ class MacTeamsRTLRunner(TeamsRTLRunnerBase):
     def _spawn_new_instance_override(self, teams_path):
         subprocess.Popen([teams_path, '--remote-debugging-port={}'.format(self.port)], cwd=os.path.dirname(teams_path))
 
+
+def try_encode_utf_8(string):
+    try:
+        return string.encode('utf-8')
+    except Exception as e:
+        return string
 
 
 if '__main__' == __name__:
